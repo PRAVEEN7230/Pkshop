@@ -4,29 +4,37 @@ const bcrypt = require("bcryptjs")
 
 const register = async (req, res) => {
     const user = await User.findOne({ username: req.body.username });
-    user && res.status(201).json("User already registered");
-  
-    const salt = await bcrypt.genSalt(10)
-    const newUser = new User({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      username: req.body.username,
-      email: req.body.email,
-      password: await bcrypt.hash(req.body.password, salt),
-    });
-  
-    try {
-      const savedUser = await newUser.save();
-      res.status(201).json(savedUser);
-    } catch (err) {
-      res.status(500).json(err);
+    if(user){
+      res.status(201).json("User already registered");
+    }
+    else{
+      const salt = await bcrypt.genSalt(10)
+      const newUser = new User({
+        name: req.body.name,
+        username: req.body.username,
+        email: req.body.email,
+        password: await bcrypt.hash(req.body.password, salt),
+      });
+    
+      try {
+        const savedUser = await newUser.save();
+        res.status(201).json(savedUser);
+      } catch (err) {
+        res.status(500).json(err);
+      } 
     }
   }
 
 const login = async (req, res) => {
-    const user = await User.findOne({ username: req.body.username });
-    !user && res.status(401).json("User not found!");
-    bcrypt.compare(req.body.password, user.password, function (err, sucess) {
+    let user;
+    if(req.body.username.split("@").length>1){
+      user = await User.findOne({ email: req.body.username });
+    }else{
+      user = await User.findOne({ username: req.body.username });
+    }
+
+    if(user){
+      bcrypt.compare(req.body.password, user.password, function (err, sucess) {
         if (err) {
           res.status(500).json(err);
         } else if (!sucess) {
@@ -44,7 +52,20 @@ const login = async (req, res) => {
             const { password, ...others } = user._doc;
             res.status(200).json({...others, accessToken});
         }
-    })
+      })
+    } else{
+      res.status(401).json("User not found!");
+    }
   }
 
-module.exports = { register, login }
+  const logout = (req, res) => {
+    try{
+        req.headers.token = "";
+        res.status(200).json("User logged out sucessfully");
+    }catch(err){
+        res.status(500).json(err.message);
+    }
+    
+  }
+
+module.exports = { register, login, logout }

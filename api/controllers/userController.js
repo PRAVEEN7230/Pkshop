@@ -1,6 +1,28 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs")
 
+const addUser = async (req, res) => {
+  const user = await User.findOne({ username: req.body.username });
+  if(user){
+    res.status(201).json("User already Exists with these details");
+  }
+  else{
+    const salt = await bcrypt.genSalt(10)
+    const { password, ...others } = req.body;
+    const newUser = new User({
+      password: await bcrypt.hash(req.body.password, salt),
+      ...others
+    });
+
+    try {
+      const savedUser = await newUser.save();
+      res.status(200).json(savedUser);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  }
+}
+
 const getAllUsers = async (req, res) => {
     const query = req.query.new;
     try {
@@ -77,4 +99,4 @@ const updateUser = async (req, res) => {
     }
   }
 
-  module.exports = { getAllUsers, findUser, updateUser, deleteUser, userStats }
+  module.exports = { addUser, getAllUsers, findUser, updateUser, deleteUser, userStats }

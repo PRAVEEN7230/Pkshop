@@ -1,4 +1,4 @@
-const { updateCart, addToCart, deleteFromCart, getUserCart } = require("../controllers/cartController");
+const { updateCart, addToCart, deleteFromCart, getUserCart, getAllUsersCart } = require("../controllers/cartController");
 const {
   verifyToken,
   verifyTokenAndAuthorization,
@@ -20,6 +20,6 @@ router.delete("/:id", verifyTokenAndAuthorization, deleteFromCart);
 router.get("/find/:userId", verifyTokenAndAuthorization, getUserCart);
 
 //GET ALL Users CART
-router.get("/", verifyTokenAndAdmin, deleteFromCart);
+router.get("/", verifyTokenAndAdmin, getAllUsersCart);
 
 module.exports = router;

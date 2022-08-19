@@ -2,9 +2,12 @@ const {
   verifyTokenAndAuthorization,
   verifyTokenAndAdmin,
 } = require("../controllers/verifyToken");
-const { updateUser, deleteUser, findUser, getAllUsers, userStats } = require("../controllers/userController");
+const { updateUser, deleteUser, findUser, getAllUsers, userStats, addUser } = require("../controllers/userController");
 
 const router = require("express").Router();
+
+//CREATE
+router.post("/", verifyTokenAndAdmin, addUser);
 
 //UPDATE
 router.put("/:id", verifyTokenAndAuthorization, updateUser);
