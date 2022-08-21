@@ -1,9 +1,12 @@
+const mongoose = require("mongoose");
 const Order = require("../models/orderModel");
 
  const createOrder = async (req, res) => {
+    req.body.userId = mongoose.Types.ObjectId(req.body.userId);
+    req.body.products.productId = mongoose.Types.ObjectId(req.body.products.productId);
     const newOrder = new Order(req.body);
     try {
-      const savedOrder = await newOrder.save();
+      const savedOrder = await newOrder.save()
       res.status(200).json(savedOrder);
     } catch (err) {
       res.status(500).json(err);
@@ -18,7 +21,8 @@ const updateOrder = async (req, res) => {
           $set: req.body,
         },
         { new: true }
-      );
+      ).populate("userId", "name email")
+      .populate("products.productId", "title desc img categories size color price");
       res.status(200).json(updatedOrder);
     } catch (err) {
       res.status(500).json(err);
@@ -36,7 +40,9 @@ const updateOrder = async (req, res) => {
 
   const getUserOrders = async (req, res) => {
     try {
-      const orders = await Order.find({ userId: req.params.userId });
+      const orders = await Order.find({ userId: req.params.userId })
+      .populate("userId", "name email")
+      .populate("products.productId", "title desc img categories size color price");
       res.status(200).json(orders);
     } catch (err) {
       res.status(500).json(err);
@@ -45,7 +51,9 @@ const updateOrder = async (req, res) => {
 
   const getAllOrders = async (req, res) => {
     try {
-      const orders = await Order.find();
+      const orders = await Order.find()
+      .populate("userId", "name email")
+      .populate("products.productId", "title desc img categories size color price");
       res.status(200).json(orders);
     } catch (err) {
       res.status(500).json(err);

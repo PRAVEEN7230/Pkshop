@@ -3,7 +3,10 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs")
 
 const register = async (req, res) => {
-    const user = await User.findOne({ username: req.body.username });
+    const user = await User.findOne({
+      $or: [{ username: req.body.username},
+        {email: req.body.email,}
+      ]});
     if(user){
       res.status(201).json("User already registered");
     }
@@ -27,11 +30,7 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     let user;
-    if(req.body.username.split("@").length>1){
-      user = await User.findOne({ email: req.body.username });
-    }else{
-      user = await User.findOne({ username: req.body.username });
-    }
+    user = await User.findOne({ username: req.body.username });
 
     if(user){
       bcrypt.compare(req.body.password, user.password, function (err, sucess) {

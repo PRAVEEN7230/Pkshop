@@ -1,7 +1,7 @@
 const {
   verifyTokenAndAuthorization,
   verifyTokenAndAdmin,
-} = require("../controllers/verifyToken");
+} = require("../middleware/verifyToken");
 const { updateUser, deleteUser, findUser, getAllUsers, userStats, addUser } = require("../controllers/userController");
 
 const router = require("express").Router();

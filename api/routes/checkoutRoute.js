@@ -1,5 +1,5 @@
 const { processPayment } = require("../controllers/checkoutController");
-const { verifyToken } = require("../controllers/verifyToken");
+const { verifyToken } = require("../middleware/verifyToken");
 const router = require("express").Router();
 
 //PROCESS PAYMENT
