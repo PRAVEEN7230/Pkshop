@@ -1,18 +1,31 @@
 const Cart = require("../models/cartModel");
-const mongoose = require("mongoose");
 
 const addToCart = async (req, res) => {
-    req.body.userId = mongoose.Types.ObjectId(req.body.userId);
-    req.body.products.productId = mongoose.Types.ObjectId(req.body.products.productId);
-    const newCart = new Cart(req.body);
-    try {
-      const savedCart = await newCart.save()
-      .populate("userId", "name email")
-      .populate("products.productId", "title img price");
-      res.status(200).json(savedCart);
-    } catch (err) {
-      res.status(500).json(err);
+    const cart = await Cart.findOne({ userId: req.body.userId });
+    if(cart){
+      if(cart.products.every((p)=> p.productId== req.body.products[0].productId)){
+        res.status(200).json("Product already present in your cart");
+      }else{
+        cart.products.push(...req.body.products);
+        const updatedCart = await Cart.findByIdAndUpdate(
+          cart.id,
+          {
+            $set: cart,
+          },
+          { new: true }
+        );
+        res.status(200).json(updatedCart);
+      }
+    }else{
+      const newCart = new Cart(req.body);
+      try {
+        const savedCart = await newCart.save();
+        res.status(200).json(savedCart);
+      } catch (err) {
+        res.status(500).json(err);
+      }
     }
+    
   }
 const updateCart = async (req, res) => {
     try {
@@ -23,7 +36,7 @@ const updateCart = async (req, res) => {
         },
         { new: true }
       ).populate("userId", "name email")
-      .populate("products.productId", "title img price");;
+      .populate("products.productId", "title img price");
       res.status(200).json(updatedCart);
     } catch (err) {
       res.status(500).json(err);

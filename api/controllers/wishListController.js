@@ -1,17 +1,30 @@
 const WishList = require("../models/wishListModel");
-const mongoose = require("mongoose");
 
 const addToWishList = async (req, res) => {
-    req.body.userId = mongoose.Types.ObjectId(req.body.userId);
-    req.body.products.productId = mongoose.Types.ObjectId(req.body.products.productId);
-    const newWishList = new WishList(req.body);
-    try {
-      const savedWishList = await newWishList.save()
-      .populate("userId", "name email")
-      .populate("products.productId", "title desc img categories size color price");
-      res.status(200).json(savedWishList);
-    } catch (err) {
-      res.status(500).json(err);
+    const wishList = await WishList.findOne({ userId: req.body.userId });
+    if(wishList){
+      console.log("Already exist wishlist...")
+      if(wishList.products.every((p)=> p.productId== req.body.products[0].productId)){
+        res.status(200).json("Product already present in your wishlist");
+      }else{
+        wishList.products.push(...req.body.products);
+        const updatedWishList = await WishList.findByIdAndUpdate(
+          wishList.id,
+          {
+            $set: wishList,
+          },
+          { new: true }
+        );
+        res.status(200).json(updatedWishList);
+      }
+    } else{
+      const newWishList = new WishList(req.body);
+      try {
+        const savedWishList = await newWishList.save();
+        res.status(200).json(savedWishList);
+      } catch (err) {
+        res.status(500).json(err);
+      }
     }
   }
 const updateWishList = async (req, res) => {

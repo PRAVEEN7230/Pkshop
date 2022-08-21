@@ -1,12 +1,9 @@
-const mongoose = require("mongoose");
 const Order = require("../models/orderModel");
 
  const createOrder = async (req, res) => {
-    req.body.userId = mongoose.Types.ObjectId(req.body.userId);
-    req.body.products.productId = mongoose.Types.ObjectId(req.body.products.productId);
     const newOrder = new Order(req.body);
     try {
-      const savedOrder = await newOrder.save()
+      var savedOrder = await newOrder.save();
       res.status(200).json(savedOrder);
     } catch (err) {
       res.status(500).json(err);
@@ -33,6 +30,24 @@ const updateOrder = async (req, res) => {
     try {
       await Order.findByIdAndDelete(req.params.id);
       res.status(200).json("Order has been deleted...");
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  }
+
+  const getOrder = async (req, res) => {
+    try {
+      const order = await Order.findById(req.params.id)
+      .populate("userId", "-password")
+      .populate("products.productId", !req.user.isAdmin&&"-stock");;
+      if(!order){
+        res.status(500).json("Order not found");
+      }
+      if(order.userId !== req.user.id){
+        res.status(200).json(order);
+      } else{
+        res.status(500).json("This order not belongs to you");
+      }
     } catch (err) {
       res.status(500).json(err);
     }
@@ -95,4 +110,4 @@ const updateOrder = async (req, res) => {
     }
   }
 
-  module.exports = { createOrder, updateOrder, deleteOrder, getUserOrders, getAllOrders, getIncome }
+  module.exports = { createOrder, updateOrder, deleteOrder, getOrder, getUserOrders, getAllOrders, getIncome }

@@ -2,6 +2,7 @@ const {
   createOrder,
   updateOrder, 
   deleteOrder, 
+  getOrder,
   getUserOrders, 
   getAllOrders, 
   getIncome 
@@ -23,8 +24,11 @@ router.put("/:id", verifyTokenAndAdmin, updateOrder);
 //DELETE
 router.delete("/:id", verifyTokenAndAdmin, deleteOrder);
 
+//GET ORDER DETAILS
+router.get("/:id", verifyToken, getOrder);
+
 //GET USER ORDERS
-router.get("/find/:userId", verifyTokenAndAuthorization, getUserOrders);
+router.get("/users/:userId", verifyTokenAndAuthorization, getUserOrders);
 
 //GET ALL ORDERS
 router.get("/", verifyTokenAndAdmin, getAllOrders);
