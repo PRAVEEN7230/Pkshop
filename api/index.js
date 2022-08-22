@@ -4,12 +4,13 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();
 const userRoute = require("./routes/userRoute");
-const authRoute = require("./routes/authRoute");
+const authRoute = require("./auth/authRoute");
 const productRoute = require("./routes/productRoute");
 const cartRoute = require("./routes/cartRoute");
 const wishListRoute = require("./routes/wishListRoute");
 const orderRoute = require("./routes/orderRoute");
 const checkoutRoute = require("./routes/checkoutRoute");
+const productReviewRoute = require("./routes/productReviewRoute");
 
 const cors = require("cors");
 
@@ -29,6 +30,7 @@ app.use("/api/carts", cartRoute);
 app.use("/api/wishLists", wishListRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/checkout", checkoutRoute);
+app.use("/api/productReviews", productReviewRoute);
 
 app.listen(process.env.PORT || 5000, () => {
   console.log("Pkshop api server is running!");

@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs")
 const addUser = async (req, res) => {
   const user = await User.findOne({ username: req.body.username });
   if(user){
-    res.status(201).json("User already Exists with these details");
+    res.status(500).json("User already Exists with these details");
   }
   else{
     const salt = await bcrypt.genSalt(10)
@@ -66,11 +66,12 @@ const updateUser = async (req, res) => {
   }
 
   const deleteUser = async (req, res) => {
-    try {
-      await User.findByIdAndDelete(req.params.id);
+    const user = await User.findById(req.params.id);
+    if(user){
+      user.delete()
       res.status(200).json("User has been deleted...");
-    } catch (err) {
-      res.status(500).json(err);
+    }else{
+      res.status(500).json("User not found");
     }
   }
 

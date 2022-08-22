@@ -27,11 +27,12 @@ const updateOrder = async (req, res) => {
   }
 
   const deleteOrder = async (req, res) => {
-    try {
-      await Order.findByIdAndDelete(req.params.id);
+    const order = await Order.findById(req.params.id);
+    if(order){
+      order.delete()
       res.status(200).json("Order has been deleted...");
-    } catch (err) {
-      res.status(500).json(err);
+    }else{
+      res.status(500).json("Order not found");
     }
   }
 
@@ -57,7 +58,7 @@ const updateOrder = async (req, res) => {
     try {
       const orders = await Order.find({ userId: req.params.userId })
       .populate("userId", "name email")
-      .populate("products.productId", "title desc img categories size color price");
+      .populate("products.productId", "title img size color price");
       res.status(200).json(orders);
     } catch (err) {
       res.status(500).json(err);
@@ -68,7 +69,7 @@ const updateOrder = async (req, res) => {
     try {
       const orders = await Order.find()
       .populate("userId", "name email")
-      .populate("products.productId", "title desc img categories size color price");
+      .populate("products.productId", "title price");
       res.status(200).json(orders);
     } catch (err) {
       res.status(500).json(err);

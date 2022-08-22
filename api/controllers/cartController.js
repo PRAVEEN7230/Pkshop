@@ -4,7 +4,7 @@ const addToCart = async (req, res) => {
     const cart = await Cart.findOne({ userId: req.body.userId });
     if(cart){
       if(cart.products.every((p)=> p.productId== req.body.products[0].productId)){
-        res.status(200).json("Product already present in your cart");
+        res.status(500).json("Product already present in your cart");
       }else{
         cart.products.push(...req.body.products);
         const updatedCart = await Cart.findByIdAndUpdate(
@@ -36,7 +36,7 @@ const updateCart = async (req, res) => {
         },
         { new: true }
       ).populate("userId", "name email")
-      .populate("products.productId", "title img price");
+      .populate("products.productId", "title desc img categories size color price");
       res.status(200).json(updatedCart);
     } catch (err) {
       res.status(500).json(err);
@@ -44,18 +44,19 @@ const updateCart = async (req, res) => {
   }
   
 const deleteFromCart = async (req, res) => {
-    try {
-      await Cart.findByIdAndDelete(req.params.id);
+    const cart = await Cart.findById(req.params.id);
+    if(cart){
+      cart.delete()
       res.status(200).json("Cart has been deleted...");
-    } catch (err) {
-      res.status(500).json(err);
+    }else{
+      res.status(500).json("Cart not found");
     }
   }
 const getUserCart = async (req, res) => {
     try {
       const cart = await Cart.findOne({ userId: req.params.userId })
       .populate("userId", "name email")
-      .populate("products.productId", "title img price");
+      .populate("products.productId", "title img size color price");
       res.status(200).json(cart);
     } catch (err) {
       res.status(500).json(err);
@@ -64,7 +65,9 @@ const getUserCart = async (req, res) => {
 
 const getAllUsersCart = async (req, res) => {
     try {
-      const carts = await Cart.find();
+      const carts = await Cart.find()
+      .populate("userId", "name email")
+      .populate("products.productId", "title price");
       res.status(200).json(carts);
     } catch (err) {
       res.status(500).json(err);
