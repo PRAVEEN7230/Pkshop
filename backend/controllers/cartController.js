@@ -22,7 +22,7 @@ const addToCart = async (req, res) => {
         const savedCart = await newCart.save();
         res.status(200).json(savedCart);
       } catch (err) {
-        res.status(500).json(err);
+        res.status(500).json(err.message);
       }
     }
     
@@ -39,7 +39,7 @@ const updateCart = async (req, res) => {
       .populate("products.productId", "title desc img categories size color price");
       res.status(200).json(updatedCart);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
   
@@ -59,7 +59,7 @@ const getUserCart = async (req, res) => {
       .populate("products.productId", "title img size color price");
       res.status(200).json(cart);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
 
@@ -70,7 +70,7 @@ const getAllUsersCart = async (req, res) => {
       .populate("products.productId", "title price");
       res.status(200).json(carts);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
 

@@ -25,7 +25,7 @@ router.put("/:id", verifyTokenAndAdmin, updateOrder);
 router.delete("/:id", verifyTokenAndAdmin, deleteOrder);
 
 //GET ORDER DETAILS
-router.get("/:id", verifyToken, getOrder);
+router.get("/show/:id", verifyToken, getOrder);
 
 //GET USER ORDERS
 router.get("/users/:userId", verifyTokenAndAuthorization, getUserOrders);

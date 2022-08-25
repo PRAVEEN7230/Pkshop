@@ -23,7 +23,7 @@ const register = async (req, res) => {
         const savedUser = await newUser.save();
         res.status(201).json(savedUser);
       } catch (err) {
-        res.status(500).json(err);
+        res.status(500).json(err.message);
       } 
     }
   }
@@ -35,7 +35,7 @@ const login = async (req, res) => {
     if(user){
       bcrypt.compare(req.body.password, user.password, function (err, sucess) {
         if (err) {
-          res.status(500).json(err);
+          res.status(500).json(err.message);
         } else if (!sucess) {
           res.status(401).json("Invalid Password!");
         } else {

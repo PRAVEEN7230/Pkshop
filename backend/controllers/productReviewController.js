@@ -15,7 +15,7 @@ const writeProductReview = async (req, res) => {
         const savedProductReview = await newProductReview.save();
         res.status(200).json(savedProductReview);
       } catch (err) {
-        res.status(500).json(err);
+        res.status(500).json(err.message);
       }
     }
   }
@@ -31,7 +31,7 @@ const updateProductReview = async (req, res) => {
       .populate("productId", "title");
       res.status(200).json(updatedProductReview);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
   
@@ -52,7 +52,7 @@ const getAllProductReviews = async (req, res) => {
       .populate("productId", "title");
       res.status(200).json(productReviews);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
 
@@ -63,7 +63,7 @@ const getAllProductReviews = async (req, res) => {
       .populate("productId", "title");
       res.status(200).json(productReviews);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
 
@@ -74,7 +74,7 @@ const getAllProductReviews = async (req, res) => {
       .populate("productId", "title");
       res.status(200).json(productReviews);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
 

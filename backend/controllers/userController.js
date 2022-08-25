@@ -18,7 +18,7 @@ const addUser = async (req, res) => {
       const savedUser = await newUser.save();
       res.status(200).json(savedUser);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
 }
@@ -31,7 +31,7 @@ const getAllUsers = async (req, res) => {
         : await User.find();
       res.status(200).json(users);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
 
@@ -41,7 +41,7 @@ const findUser = async (req, res) => {
       const { password, ...others } = user._doc;
       res.status(200).json(others);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
 
@@ -61,7 +61,7 @@ const updateUser = async (req, res) => {
       );
       res.status(200).json(updatedUser);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
 
@@ -96,7 +96,7 @@ const updateUser = async (req, res) => {
       ]);
       res.status(200).json(data)
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
 

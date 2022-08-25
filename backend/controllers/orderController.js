@@ -6,7 +6,7 @@ const Order = require("../models/orderModel");
       var savedOrder = await newOrder.save();
       res.status(200).json(savedOrder);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
 
@@ -22,7 +22,7 @@ const updateOrder = async (req, res) => {
       .populate("products.productId", "title desc img categories size color price");
       res.status(200).json(updatedOrder);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
 
@@ -50,7 +50,7 @@ const updateOrder = async (req, res) => {
         res.status(500).json("This order not belongs to you");
       }
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
 
@@ -61,7 +61,7 @@ const updateOrder = async (req, res) => {
       .populate("products.productId", "title img size color price");
       res.status(200).json(orders);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
 
@@ -72,7 +72,7 @@ const updateOrder = async (req, res) => {
       .populate("products.productId", "title price");
       res.status(200).json(orders);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
 
@@ -107,7 +107,7 @@ const updateOrder = async (req, res) => {
       ]);
       res.status(200).json(income);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   }
 
